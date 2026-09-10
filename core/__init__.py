@@ -1,7 +1,13 @@
-﻿from .inversion import JointArielInversionEngine
+from .inversion import (
+    RobustJointArielInversionEngine,
+    JointArielInversionEngine,
+)
+
 from .simulator import RadiativeTransferSimulator
-from .retrieval import evaluate_single_planet_bic
+
+from .retrieval import evaluate_batch_bic_gpu
+
 from .pipeline import OSTEArielPipeline
 
-__version__ = "2.5.0-SOTA"
+__version__ = "1.0.0-Academic"
 __author__ = "Kaan Yilmaz"
