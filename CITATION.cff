@@ -1,0 +1,8 @@
+﻿cff-version: 1.2.0
+message: "If you use this software in academic research, please cite it as below."
+authors:
+  - family-names: "Yilmaz"
+    given-names: "Kaan"
+title: "OSTE-Ariel: Hierarchical Spectro-Photometric Inversion Engine"
+version: 2.5.0
+date-released: 2026-09-10
