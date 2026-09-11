@@ -1,12 +1,6 @@
-from .inversion import (
-    RobustJointArielInversionEngine,
-    JointArielInversionEngine,
-)
-
+from .inversion import RobustJointArielInversionEngine, JointArielInversionEngine
 from .simulator import RadiativeTransferSimulator
-
-from .retrieval import evaluate_batch_bic_gpu
-
+from .retrieval import evaluate_batch_bic_spot_aware_gpu, evaluate_batch_bic_gpu
 from .pipeline import OSTEArielPipeline
 
 __version__ = "1.0.0-Academic"

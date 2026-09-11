@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OSTE-Ariel | VoltHacks 2026 Presentation</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #090d16; color: #e2e8f0; margin: 0; padding: 25px; }
+  .slide { max-width: 980px; margin: 25px auto; background: #111827; border-radius: 14px; padding: 40px; border: 1px solid #1f2937; box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+  h1 { color: #38bdf8; font-size: 26px; margin-top: 0; border-bottom: 2px solid #1f2937; padding-bottom: 12px; }
+  h2 { color: #f3f4f6; font-size: 19px; margin-top: 0; }
+  p, li { line-height: 1.65; color: #9ca3af; font-size: 15px; }
+  strong { color: #f9fafb; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: center; }
+  img { width: 100%; border-radius: 8px; border: 1px solid #374151; }
+  .badge-volthacks { display: inline-block; background: #0284c7; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
+  .highlight-card { background: #1f2937; border-left: 4px solid #38bdf8; padding: 16px; border-radius: 6px; margin: 15px 0; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+  .stat-box { background: #1a2234; padding: 15px; border-radius: 8px; border: 1px solid #283548; text-align: center; }
+  .stat-val { font-size: 24px; font-weight: bold; color: #38bdf8; }
+  .stat-lbl { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #283548; }
+  th { color: #38bdf8; background: #162032; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 -->
+<div class="slide">
+  <span class="badge-volthacks">VoltHacks 2026 | AI + Hardware Integration</span>
+  <h1>OSTE-Ariel: Hardware-Accelerated Exoplanet Atmospheric Engine</h1>
+  <p><strong>Transforming Space Telescope Sensor Jitter into Calibrated Atmospheric Spectra in 65 Microseconds</strong></p>
+  <div class="highlight-card">
+    <p><strong>Author:</strong> Kaan Yilmaz (Independent Student Researcher)<br>
+    <strong>Core Engineering Breakthrough:</strong> Compressing 24-hour CPU cluster MCMC retrievals into a parallel Tensor Core GPU pipeline running at 15,300+ planets/second on local laptop silicon.</p>
+  </div>
+</div>
+
+<!-- SLIDE 2 -->
+<div class="slide">
+  <h1>The Problem: The 48-Hour Space Spectroscopy Bottleneck</h1>
+  <div class="grid">
+    <div>
+      <h2>1. The Cluster Compute Crisis</h2>
+      <p>Observing atmospheric water and methane with transmission spectroscopy requires heavy MCMC Bayesian sampling (TauREx 3) taking <strong>12 to 48 hours of CPU cluster time per planet</strong>.</p>
+      <h2>2. Opto-Mechanical Pointing Drift</h2>
+      <p>Telescope pointing jitter in space introduces chromatic noise that dilutes transit depths by up to <strong>200 ppm</strong>.</p>
+    </div>
+    <div>
+      <h2>3. The Unocculted Spot Dilemma</h2>
+      <p>Cool stellar spots (4200 K) mimic the 2.7 µm water vapor band, causing false alarms in black-box neural networks.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3 -->
+<div class="slide">
+  <h1>The Hardware Architecture: 8-Parameter Orthogonal Inversion</h1>
+  <div class="highlight-card">
+    <p>We couple sensor telemetry (AIRS 52-channel spectroscopy + FGS pointing jitter) into an 8-parameter joint design matrix: <strong>M = [1, x, y, x², y², xy, -Transit(t), Spot(t)]</strong>.</p>
+  </div>
+  <p>By solving Generalized Least Squares on GPU Tensor Cores via batched GEMM operations, transit depth is solved <strong>simultaneously</strong> with pointing drift, mathematically eliminating transit dilution.</p>
+</div>
+
+<!-- SLIDE 4 -->
+<div class="slide">
+  <h1>Empirical Hardware Performance (RTX 3050 Laptop GPU)</h1>
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="stat-val">65.30 µs</div>
+      <div class="stat-lbl">Net GPU Latency / Target</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">14.08 ppm</div>
+      <div class="stat-lbl">Real Mean Spectral Error</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val">15,314</div>
+      <div class="stat-lbl">Planets Processed / Sec</div>
+    </div>
+  </div>
+  <div class="grid">
+    <div>
+      <img src="assets/fig1_spectral_recovery.png" alt="Spectral Recovery">
+    </div>
+    <div>
+      <h2>Precision at the Noise Floor:</h2>
+      <ul>
+        <li><strong>95th Percentile Error:</strong> 34.93 ppm (Stable outlier rejection).</li>
+        <li><strong>Physical Uncertainty (1σ):</strong> ±17.4 ppm (Derived analytically from residual covariance).</li>
+        <li>Matches competition-winning pipelines (~12–25 ppm) while running ~7,000× faster.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5 -->
+<div class="slide">
+  <h1>Sensor Physics: Suppressing False Positives</h1>
+  <div class="grid">
+    <div>
+      <img src="assets/fig2_stellar_spot_effect.png" alt="Stellar Spot Effect">
+    </div>
+    <div>
+      <h2>The Flanking-Wing Solution:</h2>
+      <p>To prevent stellar spots from mimicking water, we evaluate narrow-band differential indices against immediate flanking wings ($\Delta\lambda \approx 0.4\text{ }\mu\text{m}$).</p>
+      <ul>
+        <li>Spot chromaticity cancels linearly across the narrow baseline.</li>
+        <li><strong>CH4 False Alarm Rate:</strong> %1.71</li>
+        <li><strong>H2O Detection Sensitivity:</strong> %92.5</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6 -->
+<div class="slide">
+  <h1>Latency Comparison: Clusters vs. Local Silicon</h1>
+  <div class="grid">
+    <div>
+      <img src="assets/fig3_latency_breakdown.png" alt="Latency Profile">
+    </div>
+    <div>
+      <table>
+        <tr><th>Pipeline</th><th>Latency</th><th>Platform</th></tr>
+        <tr><td>TauREx 3 (MCMC)</td><td>~20 hours</td><td>CPU Cluster</td></tr>
+        <tr><td>lwelzel (maldcope)</td><td>~1200 ms</td><td>GPU MCMC/Flow</td></tr>
+        <tr><td>jcottaar / ariel2</td><td>~450 ms</td><td>Single CPU</td></tr>
+        <tr><td><strong>OSTE-Ariel (E2E)</strong></td><td><strong>4.0 to 9.0 ms</strong></td><td><strong>RTX 3050 Laptop</strong></td></tr>
+        <tr><td><strong>OSTE-Ariel (VRAM)</strong></td><td><strong>55 to 75 µs</strong></td><td><strong>Tensor Core Batch</strong></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

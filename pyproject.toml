@@ -1,11 +1,11 @@
-﻿[build-system]
+[build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "oste-ariel"
-version = "2.5.0"
-description = "Hierarchical Spectro-Photometric Inversion and Atmospheric Retrieval Engine"
+version = "1.0.0"
+description = "Hardware-Accelerated Exoplanet Atmospheric Inversion and Triage Engine"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>OSTE-Ariel: AI Builders Hackathon 2026 Presentation</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0b0f19; color: #e2e8f0; margin: 0; padding: 20px; }
+  .slide { max-width: 960px; margin: 30px auto; background: #131b2e; border-radius: 12px; padding: 40px; border: 1px solid #1e293b; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  h1 { color: #38bdf8; font-size: 26px; margin-top: 0; border-bottom: 2px solid #1e293b; padding-bottom: 12px; }
+  h2 { color: #f1f5f9; font-size: 20px; }
+  p, li { line-height: 1.6; color: #94a3b8; font-size: 15px; }
+  strong { color: #f8fafc; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; }
+  img { width: 100%; border-radius: 8px; border: 1px solid #334155; }
+  .badge { display: inline-block; background: #0284c7; color: white; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+  .highlight-box { background: #1e293b; border-left: 4px solid #38bdf8; padding: 15px; border-radius: 6px; margin: 15px 0; }
+  .warn-box { background: #2d1a1a; border-left: 4px solid #ef4444; padding: 15px; border-radius: 6px; margin: 15px 0; }
+  table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+  th, td { padding: 10px; text-align: left; border-bottom: 1px solid #334155; }
+  th { color: #38bdf8; }
+</style>
+</head>
+<body>
+
+<div class="slide">
+  <span class="badge">AI Builders Hackathon 2026</span>
+  <h1>OSTE-Ariel: High-Throughput Exoplanet Atmospheric Triage Engine</h1>
+  <p><strong>Hardware-Accelerated Orthogonal Inversion & Bayesian Hypothesis Gating for ESA Ariel & NASA JWST</strong></p>
+  <div class="highlight-box">
+    <p><strong>Author:</strong> Kaan Yilmaz (Independent Student Researcher)<br>
+    <strong>Core Breakthrough:</strong> Compressing 24-hour Bayesian atmospheric retrievals into a sub-100 microsecond GPU pipeline without sacrificing physical rigor.</p>
+  </div>
+</div>
+
+<div class="slide">
+  <h1>The Problem: The Exoplanet Spectroscopy Bottleneck</h1>
+  <div class="grid">
+    <div>
+      <h2>1. The Cluster Compute Crisis</h2>
+      <p>Traditional Bayesian Nested Sampling and MCMC (e.g. TauREx 3, NEMESIS) takes <strong>12 to 48 hours of CPU cluster compute per planet</strong>. With thousands of Ariel and JWST targets, full MCMC triage is impossible.</p>
+      <h2>2. Instrumental Jitter & Systematic Dilution</h2>
+      <p>Spacecraft pointing drift introduces chromatic transit depth shifts. Sequential linear fitting dilutes transit depth by up to <strong>200 ppm</strong>.</p>
+    </div>
+    <div>
+      <h2>3. The Unocculted Spot Dilemma</h2>
+      <p>Cool stellar spots (4200 K) mimic the 2.7 µm water absorption band, creating rampant false alarms in literature.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h1>The Architecture: 8-Parameter Orthogonal Joint Inversion</h1>
+  <div class="highlight-box">
+    <p>Instead of sequential de-trending, OSTE-Ariel constructs an 8-parameter design matrix: <strong>M = [1, x, y, x², y², xy, -Transit(t), Spot(t)]</strong>.</p>
+  </div>
+  <p>Transit depth is solved simultaneously with pointing jitter, making transit depth mathematically orthogonal to instrumental drift. The entire inversion runs in batches of 512 on GPU Tensor Cores.</p>
+</div>
+
+<div class="slide">
+  <h1>Physical Precision: 15.79 ppm Ground Truth Recovery</h1>
+  <div class="grid">
+    <div>
+      <img src="assets/fig1_spectral_recovery.png" alt="Spectral Recovery">
+    </div>
+    <div>
+      <h2>Verified Performance Under Noise:</h2>
+      <ul>
+        <li><strong>Mean Spectral Error:</strong> 15.79 ppm (Physical noise floor ~15–20 ppm).</li>
+        <li><strong>95th Percentile Error:</strong> 39.27 ppm.</li>
+        <li><strong>Physical Uncertainty:</strong> ±19.7 ppm (Analytically calibrated against residual variance).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h1>Honest Science: The Transit Light Source Effect</h1>
+  <div class="grid">
+    <div>
+      <img src="assets/fig2_stellar_spot_effect.png" alt="Stellar Spot Effect">
+    </div>
+    <div>
+      <div class="warn-box">
+        <p><strong>Why False Alarms Occur:</strong> Unocculted stellar spots introduce chromatic slopes that mimic water absorption around 2.7 µm.</p>
+      </div>
+      <p>Under severe spot contamination ($f_{\text{spot}} = 5\%$), False Alarm Rate increases to ~38%. Rather than hiding this under a fake "100% accuracy" claim, OSTE-Ariel flags spot-contaminated targets for chromatic follow-up.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h1>Latency Profile: Realistic Dual-Metric Accounting</h1>
+  <div class="grid">
+    <div>
+      <img src="assets/fig3_latency_breakdown.png" alt="Latency Breakdown">
+    </div>
+    <div>
+      <table>
+        <tr><th>Pipeline</th><th>Latency</th><th>Platform</th></tr>
+        <tr><td>TauREx 3 (MCMC)</td><td>~20 hours</td><td>CPU Cluster</td></tr>
+        <tr><td>lwelzel (maldcope)</td><td>~1200 ms</td><td>GPU MCMC</td></tr>
+        <tr><td>jcottaar / ariel2</td><td>~450 ms</td><td>Single CPU</td></tr>
+        <tr><td><strong>OSTE-Ariel (E2E)</strong></td><td><strong>4.0 to 9.0 ms</strong></td><td><strong>RTX 3050 Laptop</strong></td></tr>
+        <tr><td><strong>OSTE-Ariel (VRAM)</strong></td><td><strong>55 to 90 µs</strong></td><td><strong>Tensor Core Batch</strong></td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h1>Molecular Detection: Bayesian Evidence (Delta-BIC)</h1>
+  <div class="grid">
+    <div>
+      <img src="assets/fig4_confusion_matrix.png" alt="Confusion Matrix">
+    </div>
+    <div>
+      <h2>Pure CUDA Hypothesis Testing:</h2>
+      <ul>
+        <li>H2O Sensitivity (TPR): <strong>%80.8</strong></li>
+        <li>CH4 Sensitivity (TPR): <strong>%83.7</strong></li>
+        <li>Statistical Threshold: $\Delta\text{BIC} \ge 6.0$ ($>3\sigma$ confidence).</li>
+        <li>Runs 100% in VRAM with zero host-device synchronization latency.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h1>Mission Impact & Roadmap</h1>
+  <div class="highlight-box">
+    <h2>1. Survey-Scale Pre-Filtering</h2>
+    <p>Capable of screening 11,000+ candidates per second on consumer laptop GPUs, prioritizing JWST observation time.</p>
+  </div>
+  <h2>2. Open Source Commitment</h2>
+  <p>Fully reproducible under MIT License. Clean Python/PyTorch modules ready for ESA Ariel (launch 2029) pipeline integration.</p>
+</div>
+
+</body>
+</html>

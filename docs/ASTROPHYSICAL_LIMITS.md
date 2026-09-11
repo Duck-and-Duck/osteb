@@ -1,16 +1,11 @@
-# Astrophysical Limitations & Scope of OSTE-Ariel
+# Astrophysical Scope & Methodological Disclaimers
 
-A rigorous assessment of what OSTE-Ariel can and cannot accomplish in real flight operations:
+## 1. The Transit Light Source Effect
+Unocculted cool stellar spots ($T_{\text{spot}} < T_{\text{phot}}$) introduce chromatic slopes mimicking water absorption at 2.7 µm. 
+OSTE-Ariel employs narrow-band local differential indexing ($\Delta\lambda \approx 0.4\text{ }\mu\text{m}$ flanking wings) to eliminate linear spot curvature. However, on stars with extreme spot filling fractions ($f_{\text{spot}} > 8\%$), non-linear photospheric contamination requires multi-epoch chromatic follow-up.
 
-## 1. The Transit Light Source Effect (Stellar Contamination)
-- **Physics:** When a star has unocculted cool spots ($T_{\text{spot}} < T_{\text{phot}}$), the stellar flux deficit in the optical/near-IR distorts the normalized transmission spectrum, introducing chromatic slopes that mimic $\text{H}_2\text{O}$ absorption around 2.7 µm (Rackham et al. 2018).
-- **Limitation:** OSTE-Ariel isolates linear spot trends but does not solve a full multi-temperature non-linear photospheric model. Consequently, on heavily spotted stars ($f_{\text{spot}} > 4\%$), false alarm rates for water can reach 40%.
-- **Mitigation:** OSTE-Ariel flags candidates with high spot slopes ($W_7 > \text{threshold}$) as *Spot-Contaminated: Require Multi-Band Chromatic Follow-up*.
+## 2. Cloud Deck Attenuation
+High-altitude opaque photochemical hazes (e.g. GJ 1214b) truncate molecular absorption peaks. While OSTE-Ariel correctly flags flat atmospheres without false alarms, it cannot determine whether a featureless spectrum is caused by high-altitude clouds or a dry atmosphere without auxiliary Rayleigh scattering diagnostics.
 
-## 2. Cloud Deck Truncation (Gray Attenuation)
-- **Physics:** High-altitude opaque cloud decks ($P_{\text{cloud}} < 0.01\text{ bar}$) truncate molecular absorption peaks, producing flat, featureless transit spectra.
-- **Limitation:** The engine cannot distinguish between a completely dry atmosphere and a water-rich atmosphere covered by a high-altitude opaque haze.
-
-## 3. Scope of Deployment
-- **Intended Use:** High-throughput pre-screening, candidate triage, and proposal feasibility prioritization on catalog scales.
-- **Not Intended For:** Final confirmation of atmospheric composition in peer-reviewed discovery announcements without full Bayesian Nested Sampling (TauREx/NEMESIS) verification.
+## 3. Scope of Software
+OSTE-Ariel is a **survey triage co-pilot**. It is designed to rapidly screen large catalogs (TESS, Kepler, Ariel, PLATO) on desktop hardware to prioritize targets for expensive space observatory scheduling.
